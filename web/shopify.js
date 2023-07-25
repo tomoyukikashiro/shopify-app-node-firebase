@@ -1,7 +1,10 @@
 import { BillingInterval, LATEST_API_VERSION } from "@shopify/shopify-api";
 import { shopifyApp } from "@shopify/shopify-app-express";
-import { SQLiteSessionStorage } from "@shopify/shopify-app-session-storage-sqlite";
+// import { SQLiteSessionStorage } from "@shopify/shopify-app-session-storage-sqlite";
 import { restResources } from "@shopify/shopify-api/rest/admin/2023-04";
+import { FirestoreSessionStorage } from "@tkashiro/shopify-app-session-storage-firestore";
+import { initializeApp } from "firebase-admin/app";
+import { getFirestore } from "firebase-admin/firestore";
 
 const DB_PATH = `${process.cwd()}/database.sqlite`;
 
@@ -15,6 +18,9 @@ const billingConfig = {
     interval: BillingInterval.OneTime,
   },
 };
+
+const app = initializeApp({projectId: process.env.FIREBASE_PROJECT_ID});
+const firestore = getFirestore(app);
 
 const shopify = shopifyApp({
   api: {
@@ -30,7 +36,8 @@ const shopify = shopifyApp({
     path: "/api/webhooks",
   },
   // This should be replaced with your preferred storage strategy
-  sessionStorage: new SQLiteSessionStorage(DB_PATH),
+  // sessionStorage: new SQLiteSessionStorage(DB_PATH),
+  sessionStorage: new FirestoreSessionStorage({ firestore })
 });
 
 export default shopify;
