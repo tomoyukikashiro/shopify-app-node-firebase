@@ -3,6 +3,7 @@ import { join } from "path";
 import { readFileSync } from "fs";
 import express from "express";
 import serveStatic from "serve-static";
+import { getAuth } from "firebase-admin/auth";
 
 import shopify from "./shopify.js";
 import productCreator from "./product-creator.js";
@@ -59,6 +60,26 @@ app.get("/api/products/create", async (_req, res) => {
   }
   res.status(status).send({ success: status === 200, error });
 });
+
+app.get("/api/auth/token", async(_, res ) => {
+  const client = new shopify.api.clients.Graphql({
+    session: res.locals.shopify.session,
+  });
+  const {
+    body: { data },
+  } = await client.query({
+    data: `{
+    shop {
+      id
+      myshopifyDomain
+    }
+  }`,
+  });
+  const token = await getAuth().createCustomToken(data.shop.id, {
+    myshopifyDomain: data.shop.myshopifyDomain,
+  });
+  res.status(200).send({ token });
+})
 
 app.use(shopify.cspHeaders());
 app.use(serveStatic(STATIC_PATH, { index: false }));
