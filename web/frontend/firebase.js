@@ -1,6 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAuth, connectAuthEmulator } from "firebase/auth";
+import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -14,3 +15,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app)
 connectAuthEmulator(auth, `http://${import.meta.env.VITE_FIREBASE_AUTH_EMULATOR_HOST}`);
+const db = getFirestore(app)
+connectFirestoreEmulator(db,
+  import.meta.env.VITE_FIRESTORE_EMULATOR_HOST.split(':')[0],
+  parseInt(import.meta.env.VITE_FIRESTORE_EMULATOR_HOST.split(':')[1], 10)
+)
