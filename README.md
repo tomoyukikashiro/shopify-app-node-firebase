@@ -1,3 +1,11 @@
+# How to demo ?
+
+1. Copy `web/.env.example` and `web/front/.env.example` to `.env` respectively
+2. Edit these `web/.env` and `web/front/.env` along the firebase config
+3. Run following commands
+   - start firebase emulator : `yarn workspace shopify-app-template-node firebase`
+   - start app dev server : `yarn dev`
+
 # Shopify App Template for Node
 
 This is a template for building a [Shopify app](https://shopify.dev/docs/apps/getting-started) using Node and React. It contains the basics for building a Shopify app.
